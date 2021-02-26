@@ -99,8 +99,12 @@ byte sprite = 0x02;
 byte sprite_y1 = 100;
 
 byte sprite_y2 = 108;
-
+// game bool value
 bool game = true;
+//score value
+int score;
+// lives value
+int lives; 
 //struct for bricks 
 typedef struct Brick{
   byte _x;		// fruit x/y position
@@ -133,7 +137,7 @@ void starting_bricks() {
 bool brick_collision(int i){
   if(((bricks[i]._x >= ball_x[0]-4 && bricks[i]._x <= ball_x[0]+8)&& (bricks[i]._y >= ball_y[0]-2 && bricks[i]._y <= ball_y[0]+4))) //hits floor or collision detected
       {
-        
+        score +=1;
         return true;     // erase brick that was hit. 
         
       }
@@ -151,6 +155,8 @@ void game_over()
   
 }
 
+
+
 // main program
 void main() {
   
@@ -161,8 +167,8 @@ void main() {
   bool right;   // x direction of ball
   falling = true; 
   right = true;
-  
-  
+  score = 0;
+  lives = 3; 
   
  
   //set actor x and y
@@ -287,6 +293,15 @@ void main() {
     {//if ball is touching floor, game over end game loop if we get out of game over screen.
       if (ball_y[0] >= 220)
       {
+        // lower our lives score, reset our ball and paddle and delay a bit so user
+        // can register that they have lost a life. 
+        lives -= 1; 
+        ball_x[0] = 100;
+        ball_y[0] = 150;
+        ball_dx[0] = 0;
+        actor_x[0] = 100;
+        actor_y[0] = 200;
+        delay(20); 
         //game_over();
         //game = false; 
       }
@@ -350,7 +365,24 @@ void main() {
       
     }
    
+    //Draws and updates Scoreboard
+    oam_id = oam_spr(184, 10, 83, 3, oam_id);
+    oam_id = oam_spr(192, 10, 67, 3, oam_id);
+    oam_id = oam_spr(200, 10, 79, 3, oam_id);
+    oam_id = oam_spr(208, 10, 82, 3, oam_id);
+    oam_id = oam_spr(216, 10, 69, 3, oam_id);
+    oam_id = oam_spr(224, 10, 58, 3, oam_id);
+    oam_id = oam_spr(232, 10, (score/10%10)+48, 3, oam_id);
+    oam_id = oam_spr(240, 10, (score%10)+48, 3, oam_id);
     
+    //Draws and updates Lives
+    oam_id = oam_spr(8, 10, 76, 1, oam_id);
+    oam_id = oam_spr(16, 10, 73, 1, oam_id);
+    oam_id = oam_spr(24, 10, 86, 1, oam_id);
+    oam_id = oam_spr(32, 10, 69, 1, oam_id);
+    oam_id = oam_spr(40, 10, 83, 1, oam_id);
+    oam_id = oam_spr(48, 10, 58, 1, oam_id);
+    oam_id = oam_spr(56, 10, (lives%10)+48, 1, oam_id);
     
     // hide rest of sprites
     // if we haven't wrapped oam_id around to 0
