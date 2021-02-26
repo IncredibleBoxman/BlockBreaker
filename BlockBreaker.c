@@ -185,6 +185,46 @@ void game_over()
   score = 0;
   
 }
+void winner()
+{
+  bool game_over = true;
+  char pad; 
+  music_stop();
+  setup_graphics();
+  ppu_off();
+  
+  
+  vram_adr(NTADR_A(10,15));
+  vram_write("YOU WIN!", 9);
+  
+  vram_adr(NTADR_A(3,20));
+  vram_write("PRESS START TO PLAY AGAIN!", 26);
+  ppu_on_all();
+  
+  while(game_over) 
+  { 
+    pad = pad_trigger(0);
+    if (pad & PAD_START) 
+    {
+      //go back to our starting bricks set game_over to false and play music again
+      // delete game over message
+      ppu_off();
+      vram_adr(NAMETABLE_A);
+      vram_fill(0,1024);
+      
+      
+      starting_bricks();
+      game_over = false;
+     
+      music_play(0); 
+      ppu_on_all();
+      
+    }
+  }
+  // reset lives and score
+  lives = 3;
+  score = 0;
+}
 
 
 
@@ -229,11 +269,17 @@ void main() {
   
   starting_bricks(); 
   while (game) {
+    
     // random int for our ball's dx values
     int r = rand() % 2;
      
     // start with OAMid/sprite 0
     oam_id = 0;
+    
+    if(score >= 20)
+    {
+      winner();
+    }
     //draw our bricks on two levels with different colors (i and i-10)
     for (i = 10; i < 20; i++) {
       
