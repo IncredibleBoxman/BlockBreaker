@@ -96,6 +96,14 @@ byte sprite = 0x02;
 byte sprite_y1 = 100;
 
 byte sprite_y2 = 108;
+
+typedef struct Brick{
+  byte _x;		// fruit x/y position
+  byte _y;		
+  byte sprite; 
+  int points;
+  
+};
 // main program
 void main() {
   
@@ -130,11 +138,20 @@ void main() {
   // Will need to take out bricks from game once we work out collision 
   
   while (1) {
+    
+    struct Brick bricks[20];
     // start with OAMid/sprite 0
     oam_id = 0;
     for (i = 10; i < 20; i++) {
-      oam_id = oam_spr(i*8, sprite_y1, sprite, 0x02, oam_id);
-      oam_id = oam_spr(i*8,sprite_y2, sprite,0x00, oam_id);
+      bricks[i-10]._x = i*8;
+      bricks[i-10]._y = sprite_y1;
+      bricks[i-10].sprite = sprite;
+      bricks[i]._x = i*8;
+      bricks[i]._y = sprite_y2;
+      bricks[i].sprite = sprite;
+      
+      oam_id = oam_spr(bricks[i-10]._x, bricks[i-10]._y, bricks[i-10].sprite, 0x02, oam_id);
+      oam_id = oam_spr(bricks[i]._x, bricks[i]._y, bricks[i].sprite, 0x00, oam_id);
  
     }
     oam_id = oam_meta_spr(ball_x[0], ball_y[0], oam_id, ball);
