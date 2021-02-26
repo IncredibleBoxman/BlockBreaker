@@ -126,6 +126,27 @@ void starting_bricks() {
     }
   
 }
+
+bool brick_collision(int i){
+  if(((bricks[i]._x >= ball_x[0]-4 && bricks[i]._x <= ball_x[0]+8)&& (bricks[i]._y >= ball_y[0]-2 && bricks[i]._y <= ball_y[0]+4))) //hits floor or collision detected
+      {
+        
+        return true;     // erase brick that was hit. 
+        
+      }
+  
+}
+
+void game_over()
+{
+  
+  setup_graphics();
+  while(1) 
+  { 
+  }
+  
+}
+
 // main program
 void main() {
   
@@ -133,7 +154,11 @@ void main() {
   char oam_id;	// sprite ID
   char pad;	// controller flags
   bool falling; 
+  bool right; 
   falling = true; 
+  right = true;
+  
+  
  
   //set actor x and y
   actor_x[0] = 100;
@@ -169,6 +194,40 @@ void main() {
       
       oam_id = oam_spr(bricks[i-10]._x, bricks[i-10]._y, bricks[i-10].sprite, 0x02, oam_id);
       oam_id = oam_spr(bricks[i]._x, bricks[i]._y, bricks[i].sprite, 0x00, oam_id);
+      if(brick_collision(i))
+      {
+        bricks[i].sprite=0;
+        bricks[i]._x = 0;
+        bricks[i]._y = 0;
+        if(falling)
+        {
+          falling = false; 
+          break;
+        }
+        else
+        {
+          falling = true; 
+          break;
+        }
+      }
+      if(brick_collision(i-10))
+      {
+        bricks[i-10].sprite=0;
+        bricks[i-10]._x = 0;
+        bricks[i-10]._y = 0;
+        if(falling)
+        {
+          falling = false; 
+          break;
+        }
+        else
+        {
+          falling = true; 
+          break;
+        }
+      }
+      
+      
  
     }
    
@@ -192,19 +251,61 @@ void main() {
       actor_y[i] += actor_dy[i];
     }
     
+    
+    
+    // Set up walls around play area
+    if (ball_x[0] >= 220)
+      {
+        ball_dx[0] = -2;
+      }
+      
+      if (ball_x[0] <= 10)
+      {
+        ball_dx[0] = 2;
+      }
+    
     // make ball fall
     if (falling) 
-    {	//if ball is touching floor or paddle, falling is now false and a collission has taken place
-        if(ball_y[0] >= 210 || ((ball_x[0] >= actor_x[0]-4 && ball_x[0] <= actor_x[0]+8)&& (ball_y[0] >= actor_y[0]-2 && ball_y[0] <= actor_y[0]+4)))
+    {//if ball is touching floor, game over 
+      if (ball_y[0] >= 220)
+      {
+        //game_over(); 
+      }
+      
+      
+      //if ball is touching paddle, falling is now false and a collision has taken place
+      if(((ball_x[0] >= actor_x[0]-4 && ball_x[0] <= actor_x[0]+8)&& (ball_y[0] >= actor_y[0]-2 && ball_y[0] <= actor_y[0]+4)))
       {
         falling = false;
+        for (i = 0; i< 1; i++)
+        {
+          if(right)
+          {
+            ball_dx[i] = 2;
+            right = false; 
+          }
+          else
+          {
+            ball_dx[i] = -2;
+            right = true;
+          }
+        }
            
       }
+      
+          
+      
+      
+      
+      
+      
+      
       // if no collission, then continue falling. 
     	for (i = 0; i<1; i++)
     	{
       
      	 ball_y[i] += 2;
+         ball_x[i] += ball_dx[i];
     	}
     }
     else 
@@ -221,10 +322,13 @@ void main() {
       for (i = 0; i<1; i++)
     	{
       
-     	 ball_y[i] -= 2;
+     	ball_y[i] -= 2;
+        
+        ball_x[i] += ball_dx[i];
     	}
       
     }
+   
     
     
     // hide rest of sprites
