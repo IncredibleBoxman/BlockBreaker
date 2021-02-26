@@ -99,12 +99,13 @@ byte sprite = 0x02;
 byte sprite_y1 = 100;
 
 byte sprite_y2 = 108;
+
+bool game = true;
 //struct for bricks 
 typedef struct Brick{
   byte _x;		// fruit x/y position
   byte _y;		
   byte sprite; 
-  int points;
   
 };
 // make our brick structures
@@ -156,8 +157,8 @@ void main() {
   char i;	// actor index
   char oam_id;	// sprite ID
   char pad;	// controller flags
-  bool falling; 
-  bool right; 
+  bool falling; // falling flag 
+  bool right;   // x direction of ball
   falling = true; 
   right = true;
   
@@ -187,21 +188,25 @@ void main() {
   // play music
   music_play(0);
 
-  // loop forever
-  // Will need to take out bricks from game once we work out collision 
+  // loop until game is over
   
   starting_bricks(); 
-  while (1) {
+  while (game) {
     // random int for our ball's dx values
     int r = rand() % 2;
      
     // start with OAMid/sprite 0
     oam_id = 0;
+    //draw our bricks on two levels with different colors (i and i-10)
     for (i = 10; i < 20; i++) {
       
       
       oam_id = oam_spr(bricks[i-10]._x, bricks[i-10]._y, bricks[i-10].sprite, 0x02, oam_id);
       oam_id = oam_spr(bricks[i]._x, bricks[i]._y, bricks[i].sprite, 0x00, oam_id);
+      
+      //if there is a collision with bricks play sound, and erase the brick and change 
+      // our falling bool to the opposite of what it currently is 
+      // do this for both i and i-10 for both levels
       if(brick_collision(i))
       {
         sfx_play(0,2); 
@@ -240,7 +245,7 @@ void main() {
       
  
     }
-   
+   //draw our ball
     oam_id = oam_meta_spr(ball_x[0], ball_y[0], oam_id, ball);
     // set player 0/1 velocity based on controller
     for (i=0; i<2; i++) {
@@ -279,10 +284,11 @@ void main() {
     
     // make ball fall
     if (falling) 
-    {//if ball is touching floor, game over 
+    {//if ball is touching floor, game over end game loop if we get out of game over screen.
       if (ball_y[0] >= 220)
       {
-        //game_over(); 
+        //game_over();
+        //game = false; 
       }
       
       
