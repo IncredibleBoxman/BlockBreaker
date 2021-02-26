@@ -78,19 +78,35 @@ byte actor_y[NUM_ACTORS];
 sbyte actor_dx[NUM_ACTORS];
 sbyte actor_dy[NUM_ACTORS];
 
+byte ball_x[1];
+byte ball_y[1];
+
+sbyte ball_dx[1];
+sbyte ball_dy[1]; 
+
 // main program
 void main() {
   
   char i;	// actor index
   char oam_id;	// sprite ID
   char pad;	// controller flags
+  
+  //set actor x and y
   actor_x[0] = 100;
   actor_y[0] = 200;
   actor_dx[0] = 0;
   actor_dy[0] = 0;
+  
+  //set ball x and y
+  ball_x[0] = 100;
+  ball_y[0] = 150;
+  ball_dx[0] = 0;
+  ball_dy[0] = 0; 
+  
   // setup graphics
   setup_graphics();
-  famitone_init(after_the_rain_music_data);
+  //PLAY MUSIC 
+  //famitone_init(after_the_rain_music_data);
    // set music callback function for NMI
   nmi_set_callback(famitone_update);
   // play music
@@ -98,6 +114,7 @@ void main() {
 
   // loop forever
   // Will need to take out bricks from game once we work out collision 
+  
   while (1) {
     // start with OAMid/sprite 0
     oam_id = 0;
@@ -105,7 +122,7 @@ void main() {
       oam_id = oam_spr(i*8, 100, 0x02, 0x02, oam_id);
       oam_id = oam_spr(i*8,108,0x02,0x00, oam_id);
     }
-    oam_id = oam_meta_spr(200, 200, oam_id, ball);
+    oam_id = oam_meta_spr(ball_x[0], ball_y[0], oam_id, ball);
     // set player 0/1 velocity based on controller
     for (i=0; i<2; i++) {
       // poll controller i (0-1)
@@ -124,6 +141,15 @@ void main() {
       actor_x[i] += actor_dx[i];
       actor_y[i] += actor_dy[i];
     }
+    
+    // make ball fall
+    
+    for (i = 0; i<1; i++)
+    {
+      
+      ball_y[i] += 2;
+    }
+    
     // hide rest of sprites
     // if we haven't wrapped oam_id around to 0
     if (oam_id!=0) oam_hide_rest(oam_id);
@@ -131,4 +157,3 @@ void main() {
     ppu_wait_frame();
   }
 }
-
