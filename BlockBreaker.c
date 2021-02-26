@@ -72,6 +72,7 @@ void setup_graphics() {
 
 
 
+
 // number of actors (4 h/w sprites each)
 #define NUM_ACTORS 1
 
@@ -104,6 +105,27 @@ typedef struct Brick{
   int points;
   
 };
+
+struct Brick bricks[20];
+
+void starting_bricks() {
+  char oam_id;
+  char i; 
+  oam_id = 0;
+    for (i = 10; i < 20; i++) {
+      bricks[i-10]._x = i*8;
+      bricks[i-10]._y = sprite_y1;
+      bricks[i-10].sprite = sprite;
+      bricks[i]._x = i*8;
+      bricks[i]._y = sprite_y2;
+      bricks[i].sprite = sprite;
+      
+      oam_id = oam_spr(bricks[i-10]._x, bricks[i-10]._y, bricks[i-10].sprite, 0x02, oam_id);
+      oam_id = oam_spr(bricks[i]._x, bricks[i]._y, bricks[i].sprite, 0x00, oam_id);
+ 
+    }
+  
+}
 // main program
 void main() {
   
@@ -137,23 +159,19 @@ void main() {
   // loop forever
   // Will need to take out bricks from game once we work out collision 
   
+  starting_bricks(); 
   while (1) {
-    
-    struct Brick bricks[20];
+     
     // start with OAMid/sprite 0
     oam_id = 0;
     for (i = 10; i < 20; i++) {
-      bricks[i-10]._x = i*8;
-      bricks[i-10]._y = sprite_y1;
-      bricks[i-10].sprite = sprite;
-      bricks[i]._x = i*8;
-      bricks[i]._y = sprite_y2;
-      bricks[i].sprite = sprite;
+      
       
       oam_id = oam_spr(bricks[i-10]._x, bricks[i-10]._y, bricks[i-10].sprite, 0x02, oam_id);
       oam_id = oam_spr(bricks[i]._x, bricks[i]._y, bricks[i].sprite, 0x00, oam_id);
  
     }
+   
     oam_id = oam_meta_spr(ball_x[0], ball_y[0], oam_id, ball);
     // set player 0/1 velocity based on controller
     for (i=0; i<2; i++) {
@@ -195,6 +213,7 @@ void main() {
       if(ball_y[0] <= 10 )
       {
         falling = true;
+        
           
       }
       
