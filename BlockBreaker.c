@@ -16,6 +16,8 @@
 void __fastcall__ famitone_update(void);
 //#link "music_aftertherain.s"
 extern char after_the_rain_music_data[];
+//#link "demosounds.s"
+extern char demo_sounds[];
 
 // create easy to track tile/attr for metasprites 
 #define TILE 0xd8
@@ -176,7 +178,9 @@ void main() {
   // setup graphics
   setup_graphics();
   //PLAY MUSIC 
-  //famitone_init(after_the_rain_music_data);
+  famitone_init(after_the_rain_music_data);
+  // Set demosounds
+  sfx_init(demo_sounds); 
    // set music callback function for NMI
   nmi_set_callback(famitone_update);
   // play music
@@ -197,6 +201,7 @@ void main() {
       oam_id = oam_spr(bricks[i]._x, bricks[i]._y, bricks[i].sprite, 0x00, oam_id);
       if(brick_collision(i))
       {
+        sfx_play(0,2); 
         bricks[i].sprite=0;
         bricks[i]._x = 0;
         bricks[i]._y = 0;
@@ -213,6 +218,7 @@ void main() {
       }
       if(brick_collision(i-10))
       {
+        sfx_play(0,2); 
         bricks[i-10].sprite=0;
         bricks[i-10]._x = 0;
         bricks[i-10]._y = 0;
@@ -257,11 +263,13 @@ void main() {
     // Set up walls around play area
     if (ball_x[0] >= 220)
       {
+      	sfx_play(2,2);
         ball_dx[0] = -2;
       }
       
       if (ball_x[0] <= 10)
       {
+        sfx_play(2,2);
         ball_dx[0] = 2;
       }
     
@@ -277,6 +285,7 @@ void main() {
       //if ball is touching paddle, falling is now false and a collision has taken place
       if(((ball_x[0] >= actor_x[0]-4 && ball_x[0] <= actor_x[0]+8)&& (ball_y[0] >= actor_y[0]-2 && ball_y[0] <= actor_y[0]+4)))
       {
+        sfx_play(2,2); 
         falling = false;
         for (i = 0; i< 1; i++)
         {
@@ -315,6 +324,7 @@ void main() {
       if(ball_y[0] <= 10 )
       {
         falling = true;
+        sfx_play(2,2);
         
           
       }
