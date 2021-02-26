@@ -82,7 +82,7 @@ byte actor_y[NUM_ACTORS];
 // actor x/y deltas per frame (signed)
 sbyte actor_dx[NUM_ACTORS];
 sbyte actor_dy[NUM_ACTORS];
-
+//our ball and sprite stuff
 byte ball_x[1];
 byte ball_y[1];
 
@@ -97,7 +97,7 @@ byte sprite = 0x02;
 byte sprite_y1 = 100;
 
 byte sprite_y2 = 108;
-
+//struct for bricks 
 typedef struct Brick{
   byte _x;		// fruit x/y position
   byte _y;		
@@ -105,9 +105,9 @@ typedef struct Brick{
   int points;
   
 };
-
+// make our brick structures
 struct Brick bricks[20];
-
+//This is our starting bricks, what the starting area looks like. 
 void starting_bricks() {
   char oam_id;
   char i; 
@@ -126,7 +126,7 @@ void starting_bricks() {
     }
   
 }
-
+//This checks if ball has collided with a brick and returns true if so.
 bool brick_collision(int i){
   if(((bricks[i]._x >= ball_x[0]-4 && bricks[i]._x <= ball_x[0]+8)&& (bricks[i]._y >= ball_y[0]-2 && bricks[i]._y <= ball_y[0]+4))) //hits floor or collision detected
       {
@@ -136,13 +136,14 @@ bool brick_collision(int i){
       }
   
 }
-
+//Just clears the screen for now 
 void game_over()
 {
   
   setup_graphics();
   while(1) 
   { 
+   
   }
   
 }
