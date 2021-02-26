@@ -143,10 +143,10 @@ bool brick_collision(int i){
       }
   
 }
-//Just clears the screen for now 
+//stops music and displays game over message
 void game_over()
 {
-  
+  music_stop();
   setup_graphics();
   while(1) 
   { 
@@ -302,8 +302,11 @@ void main() {
         actor_x[0] = 100;
         actor_y[0] = 200;
         delay(20); 
-        //game_over();
-        //game = false; 
+        if(lives < 0)
+        {
+          game_over();
+        }
+        
       }
       
       
