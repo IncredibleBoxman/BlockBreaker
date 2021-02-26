@@ -58,6 +58,8 @@ const char PALETTE[32] = {
   0x0d,0x27,0x2a	// sprite palette 3
 };
 
+
+
 // setup PPU and tables
 void setup_graphics() {
   // clear sprites
@@ -68,8 +70,10 @@ void setup_graphics() {
   ppu_on_all();
 }
 
+
+
 // number of actors (4 h/w sprites each)
-#define NUM_ACTORS 8
+#define NUM_ACTORS 1
 
 // actor x/y positions
 byte actor_x[NUM_ACTORS];
@@ -84,20 +88,30 @@ byte ball_y[1];
 sbyte ball_dx[1];
 sbyte ball_dy[1]; 
 
+
+byte sprite = 0x02;
+
+
+
+byte sprite_y1 = 100;
+
+byte sprite_y2 = 108;
 // main program
 void main() {
   
   char i;	// actor index
   char oam_id;	// sprite ID
   char pad;	// controller flags
-  
+  bool falling; 
+  falling = true; 
+ 
   //set actor x and y
   actor_x[0] = 100;
   actor_y[0] = 200;
   actor_dx[0] = 0;
   actor_dy[0] = 0;
   
-  //set ball x and y
+  //set ball x and y and falling bool
   ball_x[0] = 100;
   ball_y[0] = 150;
   ball_dx[0] = 0;
@@ -119,8 +133,9 @@ void main() {
     // start with OAMid/sprite 0
     oam_id = 0;
     for (i = 10; i < 20; i++) {
-      oam_id = oam_spr(i*8, 100, 0x02, 0x02, oam_id);
-      oam_id = oam_spr(i*8,108,0x02,0x00, oam_id);
+      oam_id = oam_spr(i*8, sprite_y1, sprite, 0x02, oam_id);
+      oam_id = oam_spr(i*8,sprite_y2, sprite,0x00, oam_id);
+ 
     }
     oam_id = oam_meta_spr(ball_x[0], ball_y[0], oam_id, ball);
     // set player 0/1 velocity based on controller
@@ -143,12 +158,38 @@ void main() {
     }
     
     // make ball fall
-    
-    for (i = 0; i<1; i++)
-    {
+    if (falling) 
+    {	//if ball is touching floor or paddle, falling is now false and a collission has taken place
+        if(ball_y[0] >= 210 || ((ball_x[0] >= actor_x[0]-4 && ball_x[0] <= actor_x[0]+8)&& (ball_y[0] >= actor_y[0]-2 && ball_y[0] <= actor_y[0]+4)))
+      {
+        falling = false;
+           
+      }
+      // if no collission, then continue falling. 
+    	for (i = 0; i<1; i++)
+    	{
       
-      ball_y[i] += 2;
+     	 ball_y[i] += 2;
+    	}
     }
+    else 
+    {
+      // if ball is touching the ceiling then start falling again
+      if(ball_y[0] <= 10 )
+      {
+        falling = true;
+          
+      }
+      
+      // otherwise continue rising 
+      for (i = 0; i<1; i++)
+    	{
+      
+     	 ball_y[i] -= 2;
+    	}
+      
+    }
+    
     
     // hide rest of sprites
     // if we haven't wrapped oam_id around to 0
@@ -157,3 +198,5 @@ void main() {
     ppu_wait_frame();
   }
 }
+
+
