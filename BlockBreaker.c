@@ -146,9 +146,15 @@ bool brick_collision(int i){
 //stops music and displays game over message
 void game_over()
 {
+  bool game_over = true;
   music_stop();
   setup_graphics();
-  while(1) 
+  vram_adr(NTADR_A(10,15));
+  vram_write("GAME OVER", 9);
+  
+  vram_adr(NTADR_A(10,20));
+  vram_write("PRESS START", 11);
+  while(game_over) 
   { 
    
   }
