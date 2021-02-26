@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdio.h>
 // include NESLIB header
 #include "neslib.h"
 
@@ -162,6 +162,7 @@ void main() {
   right = true;
   
   
+  
  
   //set actor x and y
   actor_x[0] = 100;
@@ -191,6 +192,8 @@ void main() {
   
   starting_bricks(); 
   while (1) {
+    // random int for our ball's dx values
+    int r = rand() % 2;
      
     // start with OAMid/sprite 0
     oam_id = 0;
@@ -264,13 +267,14 @@ void main() {
     if (ball_x[0] >= 220)
       {
       	sfx_play(2,2);
-        ball_dx[0] = -2;
+      
+        ball_dx[0] = -r;
       }
       
       if (ball_x[0] <= 10)
       {
         sfx_play(2,2);
-        ball_dx[0] = 2;
+        ball_dx[0] = r;
       }
     
     // make ball fall
@@ -291,12 +295,12 @@ void main() {
         {
           if(right)
           {
-            ball_dx[i] = 2;
+            ball_dx[i] = r;
             right = false; 
           }
           else
           {
-            ball_dx[i] = -2;
+            ball_dx[i] = -r;
             right = true;
           }
         }
