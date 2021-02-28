@@ -242,7 +242,7 @@ void main() {
   bool right;   // x direction of ball
   falling = true; 
   right = true;
-  score = 19;
+  score = 0;
   lives = 3; 
   
  
