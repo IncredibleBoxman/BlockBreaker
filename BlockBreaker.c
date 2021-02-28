@@ -230,6 +230,39 @@ void winner()
   score = 0;
 }
 
+void title()
+{
+  bool bool1 = true;
+  char pad;
+  setup_graphics();
+  ppu_off();
+  vram_adr(NTADR_A(8,10));
+  vram_write("BRICK BREAKER",13);// write bytes to video RAM
+  
+  // write bytes to video RAM
+  
+  vram_adr(NTADR_A(5,20));
+  vram_write("PRESS START TO BEGIN!",21);// write bytes to video RAM
+
+  // enable PPU rendering (turn on screen)
+  ppu_on_all();
+
+  // Loop until user hits Start, then enters game state. 
+ 
+  while (bool1) {
+    pad = pad_trigger(0);
+    if (pad & PAD_START) 
+    {
+      
+      ppu_off();
+      vram_adr(NAMETABLE_A);
+      vram_fill(0,1024);
+      bool1 = false; 
+      ppu_on_all();
+    }
+  }
+}
+
 
 
 // main program
@@ -260,6 +293,7 @@ void main() {
   
   // setup graphics
   setup_graphics();
+  title();
   //PLAY MUSIC 
   famitone_init(after_the_rain_music_data);
   // Set demosounds
