@@ -1,4 +1,6 @@
-
+// angle frame before, frame after
+//sprites can be multiple bricks
+// or can be background image
 
 #include <stdlib.h>
 #include <string.h>
@@ -168,9 +170,9 @@ void game_over()
       //go back to our starting bricks set game_over to false and play music again
       // delete game over message
       ppu_off();
+      
       vram_adr(NAMETABLE_A);
       vram_fill(0,1024);
-      
       
       starting_bricks();
       game_over = false;
@@ -185,22 +187,24 @@ void game_over()
   score = 0;
   
 }
+// our win function
 void winner()
 {
+  //setup variables and stop music
   bool game_over = true;
   char pad; 
   music_stop();
   setup_graphics();
   ppu_off();
   
-  
+  // display win message
   vram_adr(NTADR_A(10,15));
   vram_write("YOU WIN!", 9);
   
   vram_adr(NTADR_A(3,20));
   vram_write("PRESS START TO PLAY AGAIN!", 26);
   ppu_on_all();
-  
+  //while we are on this screen check if player hit start
   while(game_over) 
   { 
     pad = pad_trigger(0);
@@ -238,7 +242,7 @@ void main() {
   bool right;   // x direction of ball
   falling = true; 
   right = true;
-  score = 0;
+  score = 19;
   lives = 3; 
   
  
@@ -388,7 +392,7 @@ void main() {
       
       
       //if ball is touching paddle, falling is now false and a collision has taken place
-      if(((ball_x[0] >= actor_x[0]-4 && ball_x[0] <= actor_x[0]+8)&& (ball_y[0] >= actor_y[0]-2 && ball_y[0] <= actor_y[0]+4)))
+      if(((ball_x[0] >= actor_x[0]-8 && ball_x[0] <= actor_x[0]+8)&& (ball_y[0] >= actor_y[0]-2 && ball_y[0] <= actor_y[0]+4)))
       {
         sfx_play(2,2); 
         falling = false;
